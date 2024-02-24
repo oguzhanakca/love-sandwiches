@@ -30,7 +30,8 @@ def get_last_5_entries_sales():
     columns = []
     for i in range(1,7):
         column = sales.col_values(i)
-        columns.append(column)
+        columns.append(column[-5:])
+    return columns
 
 
 def validate_data(values):
@@ -64,11 +65,23 @@ def calculate_surplus_data(sales_row):
         surplus_data.append(surplus)
     return surplus_data
 
+def calculate_stock_data(data):
+    new_stock_data = []
+    for column in data:
+        int_column = [int(num) for num in column]
+        average = sum(int_column) / len(int_column)
+        stock_num = average*1.1
+        new_stock_data.append(round(stock_num))
+    return new_stock_data
+
 def main():
     data = get_sales_data()
     sales_data = [int(num) for num in data]
     update_worksheet(sales_data,"sales")
     new_surplus_data = calculate_surplus_data(sales_data)
     update_worksheet(new_surplus_data,"surplus")
+    sales_columns = get_last_5_entries_sales()
+    stock_data = calculate_stock_data(sales_columns)
+    update_worksheet(stock_data,"stock")
 
 main()
